@@ -40,7 +40,7 @@ if __name__ == '__main__':
 
     for cnd in range(100000): 
 
-            # 寄存器起始地址，0x05CE 对应的是 1486
+        # 寄存器起始地址，0x05CE 对应的是 1486
         start_address = 1486            
         num_registers = 6  # 6 个寄存器
         # 生成要写入的值列表，每个寄存器为一个 short 值

@@ -40,7 +40,9 @@ class DDSHandler():
                     self.touch[var]=matrix
             end_time = time.time()  # 记录结束时间
             elapsed_time = end_time - start_time  # 计算耗时
-            # print(f"Data update time: {elapsed_time:.6f} seconds")  # 打印耗时
+            print(f"Data update time: {elapsed_time:.6f} seconds")  # 打印耗时
+            print("Touch callback triggered:", msg)
+
             
     def update_data_state(self,states_msg:inspire_dds.inspire_hand_state):
         with self.data_state_lock:
@@ -53,6 +55,8 @@ class DDSHandler():
                 'STATUS': states_msg.status,
                 'TEMP': states_msg.temperature
             }
+        print("State callback triggered:", states_msg)
+
     def read(self):
         with self.data_state_lock and self.data_touch_lock:
             return   {'states':self.states,'touch':self.touch}
@@ -64,8 +68,8 @@ import sys
 from inspire_sdkpy import qt_tabs,inspire_sdk,inspire_hand_defaut
 # import inspire_sdkpy
 if __name__ == "__main__":
-    ddsHandler = DDSHandler(LR='r')
-    # ddsHandler = DDSHandler(LR='l')
+    # ddsHandler = DDSHandler(LR='r')
+    ddsHandler = DDSHandler(LR='l')
 
     app = qt_tabs.QApplication(sys.argv)
     window = qt_tabs.MainWindow(data_handler=ddsHandler,dt=55,name="DDS Subscribe") # Update every 50 ms
