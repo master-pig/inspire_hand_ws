@@ -16,6 +16,7 @@ MOVE_DELAY = 1.0               # 每次动作等待时间（秒）
 RESET_PARA = 1006              # 恢复出厂参数
 DEFAULT_SPEED_SET = 1032       # 上电速度设置，6 short (12 byte)
 ANGLE_SET = 1486               # 角度目标寄存器，6 short (12 byte)
+FORCE_SET = 1498
 
 # ====== 连接灵巧手 ======
 client = ModbusTcpClient(HAND_IP, port=HAND_PORT)
@@ -27,30 +28,28 @@ print("连接成功")
 
 # ====== 可选：复位参数 ======
 print("复位参数")
-client.write_register(RESET_PARA - 1000, 1)  # 写1表示复位
+client.write_register(RESET_PARA, 1)  # 写1表示复位
 time.sleep(0.5)
 
-# ====== 设置速度 ======
-print("设置默认速度")
-speed_values = [50, 50, 50, 50, 50, 50]  # 每个自由度的速度，可调整
-for i, val in enumerate(speed_values):
-    client.write_register(DEFAULT_SPEED_SET - 1000 + i, val)
+force_values = [400, 400, 400, 400, 400, 400]  # 每个自由度的速度，可调整
+client.write_registers(FORCE_SET, force_values)
 time.sleep(0.5)
 
 # ====== 控制手指动作 ======
 # 定义几个动作，每个动作对应六个自由度角度
 actions = [
-    [30, 30, 30, 30, 30, 0,0, 0, 0, 0, 0, 0],  # 半握
-    [0, 0, 0, 60, 60, 0,0, 0, 0, 0, 0, 0],  # 握拳
-    [255, 255, 0, 0, 0, 0,0, 0, 0, 0, 0, 0],       # 张开手
-
+    [1000, 1000, 1000, 1000, 1000, 0],
+    [100, 100, 100, 100, 100, 0],
 ]
+while(1):
+    for action in actions:
+        print(f"执行动作: {action}")
+        for i, angle in enumerate(action):
+            client.write_register(ANGLE_SET + i, angle)
+        client.write_registers(ANGLE_SET, action)
+        time.sleep(5)
 
-for action in actions:
-    print(f"执行动作: {action}")
-    for i, angle in enumerate(action):
-        client.write_register(ANGLE_SET - 1000 + i, angle)
-    time.sleep(MOVE_DELAY)
 
+time.sleep(100)
 print("完成动作，关闭连接")
 client.close()
