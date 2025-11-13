@@ -117,20 +117,6 @@ class MainWindow(QMainWindow):
         clean_button.clicked.connect(self.clean_error)
         layout.addWidget(clean_button)
 
-        # ====== 写入角度部分 ======
-        layout.addWidget(QLabel("期望角度 (6自由度):"))
-        self.angle_inputs = [QLineEdit() for _ in range(6)]
-        for input_field in self.angle_inputs:
-            layout.addWidget(input_field)
-
-        write_angle_button = QPushButton('写入期望角度')
-        write_angle_button.clicked.connect(self.write_target_angles)
-        layout.addWidget(write_angle_button)
-
-        read_angle_button = QPushButton('读取当前角度')
-        read_angle_button.clicked.connect(self.read_current_angles)
-        layout.addWidget(read_angle_button)
-
         self.register_inputs = {}
         for i ,(address, info) in enumerate(registers.items()):
             layout.addWidget(QLabel(info['description']))
@@ -230,34 +216,6 @@ class MainWindow(QMainWindow):
             pass
         print("写入所有设置")
 
-    def write_target_angles(self):
-        ANGLE_SET_REG = 1486  # 角度目标寄存器起始地址
-        BASE_ADDR = 1000
-
-        try:
-            # 从输入框读取角度值
-            angles = [int(field.text()) for field in self.angle_inputs]
-            print(f"写入期望角度: {angles}")
-            # 写入寄存器
-            result = self.modbus.write_registers(1486, angles)
-            if result:
-                print("角度写入成功")
-            else:
-                print("角度写入失败")
-
-        except Exception as e:
-            print(f"写入角度出错: {e}")
-
-    def read_current_angles(self):
-        ANGLE_ACT_REG = 1486   # 实际角度寄存器（根据说明书可能不同）
-        BASE_ADDR = 1000
-        NUM_FREEDOMS = 6
-
-        result = self.modbus.read_register(ANGLE_ACT_REG - BASE_ADDR, NUM_FREEDOMS)
-        if result is not None:
-            print(f"当前实际角度值: {result}")
-        else:
-            print("读取实际角度失败")
 
     def closeEvent(self, event):
         self.modbus.close()
@@ -265,5 +223,5 @@ class MainWindow(QMainWindow):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     # window = MainWindow(ip=defaut_ip)
-    window = MainWindow(ip='192.168.123.210')
+    window = MainWindow(ip='192.168.123.211')
     sys.exit(app.exec_())

@@ -1,14 +1,11 @@
 # requirements.txt
 
-# angles==1.9.13
-angles
+angles==1.9.13
 asttokens==2.4.1
 backcall==0.2.0
 backports.tarfile==1.2.0
-# bondpy==1.8.6
-bondpy
-# catkin==0.8.10
-catkin
+bondpy==1.8.6
+catkin==0.8.10
 certifi==2024.8.30
 cffi==1.17.1
 charset-normalizer==3.4.0

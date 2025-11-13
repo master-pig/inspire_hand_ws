@@ -14,7 +14,7 @@ setup(name='inspire_sdkpy',
             "PyQt5",
             "pyqtgraph",
             "colorcet",
-            "pymodbus==3.6.9",
+            "pymodbus",
             "pyserial"
       ],
       )
